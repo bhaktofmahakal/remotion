@@ -16,7 +16,6 @@ export const Article: React.FC<{
 	);
 
 	const fontSize = longestTitle > 20 ? 70 : 80;
-
 	return (
 		<AbsoluteFill
 			style={{
