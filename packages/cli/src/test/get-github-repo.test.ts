@@ -1,5 +1,4 @@
 import {expect, test} from 'bun:test';
-import path from 'node:path';
 import {
 	getGifRef,
 	getGitConfig,
@@ -59,7 +58,7 @@ test('Should get Git Source', () => {
 		logLevel: 'info',
 	});
 	expect(git).not.toBeNull();
-	expect(git?.relativeFromGitRoot).toBe(`packages${path.sep}cli`);
+	expect(git?.relativeFromGitRoot).toBe('packages/cli');
 });
 
 test('Should recognize VERCEL', () => {
@@ -68,20 +67,22 @@ test('Should recognize VERCEL', () => {
 	process.env.VERCEL_GIT_REPO_SLUG = 'remotion';
 	process.env.VERCEL_GIT_REPO_OWNER = 'remotion-dev';
 
-	const source = getGitSource({
-		remotionRoot: process.cwd(),
-		disableGitSource: false,
-		logLevel: 'info',
-	});
-	expect(source).not.toBeNull();
-	expect(source?.name).toBe('remotion');
-	expect(source?.org).toBe('remotion-dev');
-	expect(source?.ref).toBe('123');
-	expect(source?.type).toBe('github');
-	expect(source?.relativeFromGitRoot).toBe(`packages${path.sep}cli`);
-
-	delete process.env.VERCEL_GIT_COMMIT_SHA;
-	delete process.env.VERCEL_GIT_PROVIDER;
-	delete process.env.VERCEL_GIT_REPO_SLUG;
-	delete process.env.VERCEL_GIT_REPO_OWNER;
+	try {
+		const source = getGitSource({
+			remotionRoot: process.cwd(),
+			disableGitSource: false,
+			logLevel: 'info',
+		});
+		expect(source).not.toBeNull();
+		expect(source?.name).toBe('remotion');
+		expect(source?.org).toBe('remotion-dev');
+		expect(source?.ref).toBe('123');
+		expect(source?.type).toBe('github');
+		expect(source?.relativeFromGitRoot).toBe('packages/cli');
+	} finally {
+		delete process.env.VERCEL_GIT_COMMIT_SHA;
+		delete process.env.VERCEL_GIT_PROVIDER;
+		delete process.env.VERCEL_GIT_REPO_SLUG;
+		delete process.env.VERCEL_GIT_REPO_OWNER;
+	}
 });

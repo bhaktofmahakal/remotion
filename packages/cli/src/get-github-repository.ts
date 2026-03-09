@@ -129,7 +129,10 @@ const getFromEnvVariables = (remotionRoot: string): GitSource | null => {
 		const gitConfig = getGitConfig(remotionRoot);
 		if (gitConfig) {
 			const gitRoot = path.dirname(path.dirname(gitConfig));
-			relativeFromGitRoot = path.relative(gitRoot, remotionRoot);
+			relativeFromGitRoot = path
+				.relative(gitRoot, remotionRoot)
+				.split(path.sep)
+				.join('/');
 		}
 
 		return {
@@ -183,7 +186,10 @@ export const getGitSource = ({
 	}
 
 	const gitRoot = path.dirname(path.dirname(gitConfig));
-	const relativeFromGitRoot = path.relative(gitRoot, remotionRoot);
+	const relativeFromGitRoot = path
+		.relative(gitRoot, remotionRoot)
+		.split(path.sep)
+		.join('/');
 
 	return {
 		name: parsed.name,
