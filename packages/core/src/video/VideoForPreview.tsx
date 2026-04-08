@@ -11,6 +11,7 @@ import type {IsExact} from '../audio/props.js';
 import {SharedAudioContext} from '../audio/shared-audio-tags.js';
 import {makeSharedElementSourceNode} from '../audio/shared-element-source-node.js';
 import {useFrameForVolumeProp} from '../audio/use-audio-frame.js';
+import {CompositionRenderErrorContext} from '../composition-render-error-context.js';
 import {getCrossOriginValue} from '../get-cross-origin-value.js';
 import {useLogLevel, useMountTime} from '../log-level-context.js';
 import {playbackLogging} from '../playback-logging.js';
@@ -58,6 +59,10 @@ const VideoForDevelopmentRefForwardingFunction: React.ForwardRefRenderFunction<
 	if (!context) {
 		throw new Error('SharedAudioContext not found');
 	}
+
+	const compositionRenderErrorContext = useContext(
+		CompositionRenderErrorContext,
+	);
 
 	const videoRef = useRef<HTMLVideoElement | null>(null);
 	const sharedSource = useMemo(() => {
@@ -254,10 +259,11 @@ const VideoForDevelopmentRefForwardingFunction: React.ForwardRefRenderFunction<
 					return;
 				}
 
-				throw new MediaPlaybackError({
+				const err = new MediaPlaybackError({
 					message: `The browser threw an error while playing the video ${src}: Code ${current.error.code} - ${current?.error?.message}. See https://remotion.dev/docs/media-playback-error for help. Pass an onError() prop to handle the error.`,
 					src: src as string,
 				});
+				compositionRenderErrorContext.setError(err);
 			} else {
 				// If user is handling the error, we don't cause an unhandled exception
 				if (onError) {
@@ -269,10 +275,11 @@ const VideoForDevelopmentRefForwardingFunction: React.ForwardRefRenderFunction<
 					return;
 				}
 
-				throw new MediaPlaybackError({
+				const err = new MediaPlaybackError({
 					message: 'The browser threw an error while playing the video',
 					src: src as string,
 				});
+				compositionRenderErrorContext.setError(err);
 			}
 		};
 
@@ -280,7 +287,7 @@ const VideoForDevelopmentRefForwardingFunction: React.ForwardRefRenderFunction<
 		return () => {
 			current.removeEventListener('error', errorHandler);
 		};
-	}, [onError, src]);
+	}, [compositionRenderErrorContext, onError, src]);
 
 	const currentOnDurationCallback =
 		useRef<VideoForPreviewProps['onDuration']>(onDuration);
