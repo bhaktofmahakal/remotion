@@ -264,6 +264,41 @@ test('should include "Made with Remotion" metadata', async (t) => {
 	expect(tags.comment).toBe(`Made with Remotion ${VERSION}`);
 });
 
+test('should not inflate container duration for compositions with no audio', async (t) => {
+	if (t.task.file.projectName === 'webkit') {
+		t.skip();
+		return;
+	}
+
+	const Component: React.FC = () => null;
+	const durationInFrames = 20;
+	const fps = 30;
+	const expectedDuration = durationInFrames / fps;
+
+	const result = await renderMediaOnWeb({
+		composition: {
+			component: Component,
+			id: 'no-audio-duration-test',
+			width: 100,
+			height: 100,
+			fps,
+			durationInFrames,
+		},
+		inputProps: {},
+		licenseKey: 'free-license',
+	});
+
+	const blob = await result.getBlob();
+
+	using input = new Input({
+		formats: ALL_FORMATS,
+		source: new BlobSource(blob),
+	});
+
+	const duration = await input.computeDuration();
+	expect(duration).toBeCloseTo(expectedDuration, 2);
+});
+
 test('should not fire stale progress callbacks after render completes', async (t) => {
 	if (t.task.file.projectName === 'webkit') {
 		t.skip();

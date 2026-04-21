@@ -404,6 +404,38 @@ const internalRenderMediaOnWeb = async <
 			throw new Error('renderMediaOnWeb() was cancelled');
 		}
 
+		// Pre-scan: detect whether any frame has audio assets before creating the
+		// audio track. Without this check, a silent-AAC track is always written,
+		// and AAC priming delay inflates the container duration even for
+		// compositions that have zero audio. The scan exits early on the first
+		// frame that carries audio, so the overhead is minimal for compositions
+		// that do have audio.
+		let hasAnyAudio = false;
+		if (!muted && finalAudioCodec !== null) {
+			for (let frame = realFrameRange[0]; frame <= realFrameRange[1]; frame++) {
+				if (signal?.aborted) {
+					throw new Error('renderMediaOnWeb() was cancelled');
+				}
+
+				timeUpdater.current?.update(frame);
+				await waitForReady({
+					timeoutInMilliseconds: delayRenderTimeoutInMilliseconds,
+					scope: delayRenderScope,
+					signal,
+					apiName: 'renderMediaOnWeb',
+					internalState,
+					keepalive,
+				});
+				checkForError(errorHolder);
+
+				const assets = collectAssets.current!.collectAssets();
+				if (assets.some((asset) => asset.type === 'inline-audio')) {
+					hasAnyAudio = true;
+					break;
+				}
+			}
+		}
+
 		using videoSampleSource =
 			videoEnabled && codec
 				? makeVideoSampleSourceCleanup({
@@ -438,13 +470,15 @@ const internalRenderMediaOnWeb = async <
 			);
 		}
 
-		using audioSampleSource = createAudioSampleSource({
-			muted,
-			codec: finalAudioCodec
-				? audioCodecToMediabunnyAudioCodec(finalAudioCodec)
-				: null,
-			bitrate: resolvedAudioBitrate,
-		});
+		using audioSampleSource = hasAnyAudio
+			? createAudioSampleSource({
+					muted,
+					codec: finalAudioCodec
+						? audioCodecToMediabunnyAudioCodec(finalAudioCodec)
+						: null,
+					bitrate: resolvedAudioBitrate,
+				})
+			: null;
 
 		if (audioSampleSource) {
 			outputWithCleanup.output.addAudioTrack(
