@@ -44,4 +44,5 @@ export type AudioProps = {
 	debugAudioScheduling?: boolean;
 	onError?: MediaOnError;
 	credentials?: RequestCredentials;
+	requestInit?: RequestInit;
 };

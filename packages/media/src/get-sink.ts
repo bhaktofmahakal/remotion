@@ -9,8 +9,12 @@ export const getSink = (
 	src: string,
 	logLevel: LogLevel,
 	credentials: RequestCredentials | undefined,
+	requestInit?: RequestInit,
 ) => {
-	const cacheKey = credentials ? `${src}::${credentials}` : src;
+	const cacheKey =
+		credentials || requestInit
+			? `${src}::${credentials ?? ''}::${JSON.stringify(requestInit ?? {})}`
+			: src;
 	let promise = sinkPromises[cacheKey];
 	if (!promise) {
 		Internals.Log.verbose(
@@ -20,7 +24,7 @@ export const getSink = (
 			},
 			`Sink for ${src} was not found, creating new sink`,
 		);
-		promise = getSinks(src, credentials);
+		promise = getSinks(src, credentials, requestInit);
 		sinkPromises[cacheKey] = promise;
 	}
 

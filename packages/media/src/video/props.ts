@@ -66,6 +66,7 @@ type OptionalVideoProps = {
 	headless: boolean;
 	onError: MediaOnError | undefined;
 	credentials: RequestCredentials | undefined;
+	requestInit: RequestInit | undefined;
 	objectFit: VideoObjectFit;
 	_experimentalInitiallyDrawCachedFrame: boolean;
 };

@@ -91,6 +91,7 @@ export class MediaPlayer {
 		playing,
 		sequenceOffset,
 		credentials,
+		requestInit,
 	}: {
 		canvas: HTMLCanvasElement | OffscreenCanvas | null;
 		src: string;
@@ -113,6 +114,7 @@ export class MediaPlayer {
 		playing: boolean;
 		sequenceOffset: number;
 		credentials: RequestCredentials | undefined;
+		requestInit: RequestInit | undefined;
 	}) {
 		this.canvas = canvas ?? null;
 		this.src = src;
@@ -136,14 +138,13 @@ export class MediaPlayer {
 		this.playing = playing;
 		this.sequenceOffset = sequenceOffset;
 		this.input = new Input({
-			source: new UrlSource(
-				this.src,
-				credentials
-					? {
-							requestInit: {credentials},
-						}
-					: undefined,
-			),
+			source: new UrlSource(this.src, (() => {
+				const merged = {
+					...(requestInit ?? {}),
+					...(credentials ? {credentials} : {}),
+				};
+				return Object.keys(merged).length > 0 ? {requestInit: merged} : undefined;
+			})()),
 			formats: ALL_FORMATS,
 		});
 

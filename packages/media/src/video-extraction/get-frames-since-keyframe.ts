@@ -56,12 +56,17 @@ const getFormatOrNullOrNetworkError = async (
 export const getSinks = async (
 	src: string,
 	credentials: RequestCredentials | undefined,
+	requestInit?: RequestInit,
 ) => {
+	const merged = {
+		...(requestInit ?? {}),
+		...(credentials ? {credentials} : {}),
+	};
 	const input = new Input({
 		formats: ALL_FORMATS,
 		source: new UrlSource(src, {
 			getRetryDelay,
-			...(credentials ? {requestInit: {credentials}} : undefined),
+			...(Object.keys(merged).length > 0 ? {requestInit: merged} : undefined),
 		}),
 	});
 

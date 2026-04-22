@@ -40,6 +40,7 @@ export const extractFrameViaBroadcastChannel = async ({
 	fps,
 	maxCacheSize,
 	credentials,
+	requestInit,
 }: {
 	src: string;
 	timeInSeconds: number;
@@ -56,6 +57,7 @@ export const extractFrameViaBroadcastChannel = async ({
 	fps: number;
 	maxCacheSize: number;
 	credentials: RequestCredentials | undefined;
+	requestInit: RequestInit | undefined;
 }): Promise<ExtractFrameViaBroadcastChannelResult> => {
 	if (isClientSideRendering || window.remotion_isMainTab) {
 		return extractFrameAndAudio({
@@ -73,6 +75,7 @@ export const extractFrameViaBroadcastChannel = async ({
 			fps,
 			maxCacheSize,
 			credentials,
+			requestInit,
 		});
 	}
 
