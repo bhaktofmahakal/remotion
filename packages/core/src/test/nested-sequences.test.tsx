@@ -22,6 +22,7 @@ const getForFrame = (frame: number, content: React.ReactNode) => {
 						current: false,
 					},
 					playbackRate: 1,
+					preservesPitch: null,
 					setPlaybackRate: () => {
 						throw new Error('playback rate');
 					},
