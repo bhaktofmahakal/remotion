@@ -1,5 +1,5 @@
-import {afterEach, describe, test} from 'bun:test';
 import {cleanup, render} from '@testing-library/react';
+import {afterEach, describe, test} from 'bun:test';
 import {Freeze} from '../freeze.js';
 import {expectToThrow} from './expect-to-throw.js';
 import {WrapSequenceContext} from './wrap-sequence-context.js';

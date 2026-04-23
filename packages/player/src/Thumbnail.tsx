@@ -97,6 +97,7 @@ const ThumbnailFn = <
 			setPlaybackRate: () => {
 				throw new Error('thumbnail');
 			},
+			preservesPitch: null,
 			audioAndVideoTags: {current: []},
 		};
 

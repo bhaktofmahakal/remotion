@@ -1,5 +1,5 @@
-import {afterEach, describe, expect, test} from 'bun:test';
 import {cleanup, render} from '@testing-library/react';
+import {afterEach, describe, expect, test} from 'bun:test';
 import {renderToString} from 'react-dom/server';
 import {Loop} from '../loop/index.js';
 import {expectToThrow} from './expect-to-throw.js';

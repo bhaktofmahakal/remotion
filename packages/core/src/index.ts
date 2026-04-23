@@ -150,7 +150,6 @@ export {DownloadBehavior} from './download-behavior.js';
 export * from './easing.js';
 export * from './Folder.js';
 export * from './freeze.js';
-export type {NonceHistory} from './nonce.js';
 export {getRemotionEnvironment} from './get-remotion-environment.js';
 export {getStaticFiles, StaticFile} from './get-static-files.js';
 export * from './IFrame.js';
@@ -167,6 +166,7 @@ export {
 	random,
 	RandomSeed,
 } from './no-react';
+export type {NonceHistory} from './nonce.js';
 export {prefetch, PrefetchOnProgress} from './prefetch.js';
 export {registerRoot} from './register-root.js';
 export type {PixelFormat, VideoImageFormat} from './render-types.js';

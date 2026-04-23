@@ -1,5 +1,5 @@
-import {beforeEach, expect, test} from 'bun:test';
 import {cleanup, render} from '@testing-library/react';
+import {beforeEach, expect, test} from 'bun:test';
 import {Html5Video} from '../video/index.js';
 import {WrapSequenceContext} from './wrap-sequence-context.js';
 

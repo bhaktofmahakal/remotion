@@ -64,6 +64,7 @@ export type PlayerProps<
 	readonly spaceKeyToPlayOrPause?: boolean;
 	readonly numberOfSharedAudioTags?: number;
 	readonly playbackRate?: number;
+	readonly preservesPitch?: boolean;
 	readonly renderLoading?: RenderLoading;
 	readonly moveToBeginningWhenEnded?: boolean;
 	readonly className?: string;
@@ -136,6 +137,7 @@ const PlayerFn = <
 		numberOfSharedAudioTags = 5,
 		errorFallback = () => '⚠️',
 		playbackRate = 1,
+		preservesPitch,
 		renderLoading,
 		className,
 		showPosterWhenUnplayed,
@@ -333,6 +335,15 @@ const PlayerFn = <
 
 	validatePlaybackRate(currentPlaybackRate);
 
+	if (
+		typeof preservesPitch !== 'boolean' &&
+		typeof preservesPitch !== 'undefined'
+	) {
+		throw new TypeError(
+			`'preservesPitch' must be a boolean or undefined but got '${typeof preservesPitch}' instead`,
+		);
+	}
+
 	useEffect(() => {
 		setCurrentPlaybackRate(playbackRate);
 	}, [playbackRate]);
@@ -360,9 +371,10 @@ const PlayerFn = <
 			setPlaybackRate: (rate) => {
 				setCurrentPlaybackRate(rate);
 			},
+			preservesPitch: preservesPitch ?? null,
 			audioAndVideoTags,
 		};
-	}, [frame, currentPlaybackRate, playing, rootId]);
+	}, [frame, currentPlaybackRate, playing, rootId, preservesPitch]);
 
 	const setTimelineContextValue = useMemo((): SetTimelineContextValue => {
 		return {

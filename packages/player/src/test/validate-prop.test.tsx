@@ -192,6 +192,28 @@ test('playbackRate of undefined should be okay', () => {
 	expect(true).toBe(true);
 });
 
+test('preservesPitch of wrong type should not be possible', () => {
+	try {
+		render(
+			<Player
+				compositionWidth={500}
+				compositionHeight={400}
+				fps={30}
+				durationInFrames={500}
+				component={HelloWorld}
+				controls
+				showVolumeControls
+				// @ts-expect-error
+				preservesPitch="hi"
+			/>,
+		);
+	} catch (e) {
+		expect((e as Error).message).toMatch(
+			/'preservesPitch' must be a boolean or undefined but got 'string' instead/,
+		);
+	}
+});
+
 test('volumePersistenceKey of string should be okay', () => {
 	render(
 		<Player

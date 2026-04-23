@@ -1,3 +1,4 @@
+import {cleanup, renderHook} from '@testing-library/react';
 import {
 	afterAll,
 	afterEach,
@@ -7,7 +8,6 @@ import {
 	spyOn,
 	test,
 } from 'bun:test';
-import {cleanup, renderHook} from '@testing-library/react';
 import React, {useMemo} from 'react';
 import type {SequenceManagerContext} from '../SequenceManager.js';
 import {SequenceManager} from '../SequenceManager.js';

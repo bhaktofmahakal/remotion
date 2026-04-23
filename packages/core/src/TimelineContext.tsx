@@ -18,6 +18,7 @@ export type TimelineContextValue = {
 	playing: boolean;
 	rootId: string;
 	playbackRate: number;
+	preservesPitch: boolean | null;
 	imperativePlaying: MutableRefObject<boolean>;
 	setPlaybackRate: (u: React.SetStateAction<number>) => void;
 	audioAndVideoTags: MutableRefObject<PlayableMediaTag[]>;
@@ -103,6 +104,7 @@ export const TimelineContextProvider: React.FC<{
 			imperativePlaying,
 			rootId: remotionRootId,
 			playbackRate,
+			preservesPitch: null,
 			setPlaybackRate,
 			audioAndVideoTags,
 		};

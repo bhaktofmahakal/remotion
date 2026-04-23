@@ -60,6 +60,7 @@ const mockTimelineContext: TimelineContextValue = {
 	setPlaybackRate: () => {
 		throw new Error('not implemented');
 	},
+	preservesPitch: null,
 	audioAndVideoTags: {current: []},
 };
 

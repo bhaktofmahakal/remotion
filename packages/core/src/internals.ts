@@ -95,9 +95,9 @@ import type {ResolvedStackLocation} from './sequence-stack-traces.js';
 import {SequenceStackTracesUpdateContext} from './sequence-stack-traces.js';
 import {SequenceContext} from './SequenceContext.js';
 import {
-	VisualModeOverridesContext,
 	SequenceManager,
 	SequenceVisibilityToggleContext,
+	VisualModeOverridesContext,
 } from './SequenceManager.js';
 import {setupEnvVariables} from './setup-env-variables.js';
 import * as TimelinePosition from './timeline-position-state.js';
@@ -282,12 +282,16 @@ export const Internals = {
 } as const;
 
 export type {
+	CanUpdateSequencePropStatus,
 	CompositionManagerContext,
-	ResolvedStackLocation,
 	CompProps,
 	LoggingContextValue,
 	MediaVolumeContextValue,
+	NonceHistory,
 	RemotionEnvironment,
+	ResolvedStackLocation,
+	ScheduleAudioNodeOptions,
+	ScheduleAudioNodeResult,
 	SequenceFieldSchema,
 	SequenceSchema,
 	SerializedJSONWithCustomFields,
@@ -299,8 +303,4 @@ export type {
 	TRenderAsset,
 	TSequence,
 	WatchRemotionStaticFilesPayload,
-	ScheduleAudioNodeOptions,
-	CanUpdateSequencePropStatus,
-	ScheduleAudioNodeResult,
-	NonceHistory,
 };

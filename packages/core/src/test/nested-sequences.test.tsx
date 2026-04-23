@@ -1,5 +1,5 @@
-import {afterEach, expect, test} from 'bun:test';
 import {cleanup, render} from '@testing-library/react';
+import {afterEach, expect, test} from 'bun:test';
 import {AbsoluteFill} from '../AbsoluteFill.js';
 import {Sequence} from '../Sequence.js';
 import {TimelineContext} from '../TimelineContext.js';

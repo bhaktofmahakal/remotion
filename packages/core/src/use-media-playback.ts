@@ -51,7 +51,8 @@ export const useMediaPlayback = ({
 	isPostmounting: boolean;
 	onAutoPlayError: null | (() => void);
 }) => {
-	const {playbackRate: globalPlaybackRate} = useTimelineContext();
+	const {playbackRate: globalPlaybackRate, preservesPitch} =
+		useTimelineContext();
 	const frame = useCurrentFrame();
 	const absoluteFrame = useTimelinePosition();
 	const [playing] = usePlayingState();
@@ -203,7 +204,15 @@ export const useMediaPlayback = ({
 		) {
 			mediaRef.current.playbackRate = playbackRateToSet;
 		}
-	}, [mediaRef, playbackRate]);
+
+		if (
+			mediaRef.current &&
+			preservesPitch !== null &&
+			mediaRef.current.preservesPitch !== preservesPitch
+		) {
+			mediaRef.current.preservesPitch = preservesPitch;
+		}
+	}, [mediaRef, playbackRate, preservesPitch]);
 
 	useEffect(() => {
 		const tagName = mediaType === 'audio' ? '<Html5Audio>' : '<Html5Video>';

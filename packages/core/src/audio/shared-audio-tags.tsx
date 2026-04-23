@@ -1,4 +1,3 @@
-import {type AudioHTMLAttributes} from 'react';
 import React, {
 	createContext,
 	createRef,
@@ -7,6 +6,7 @@ import React, {
 	useMemo,
 	useRef,
 	useState,
+	type AudioHTMLAttributes,
 } from 'react';
 import {useLogLevel, useMountTime} from '../log-level-context.js';
 import {Log} from '../log.js';

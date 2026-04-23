@@ -15,6 +15,7 @@ export const makeTimelineContext = (frame: number): TimelineContextValue => {
 		setPlaybackRate: () => {
 			throw new Error('playback rate');
 		},
+		preservesPitch: null,
 		audioAndVideoTags: {current: []},
 	};
 };
