@@ -1,1 +1,1 @@
-export {wrapWithErrorHandling} from './wrap-with-error-handling';
+export * from './wrap-with-error-handling';
