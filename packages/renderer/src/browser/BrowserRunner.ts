@@ -37,6 +37,8 @@ import {
 	removeEventListeners,
 } from './util';
 
+const GRACEFUL_CLOSE_TIMEOUT_MS = 5000;
+
 const PROCESS_ERROR_EXPLANATION = `Puppeteer was unable to kill the process which ran the browser binary.
  This means that, on future Puppeteer launches, Puppeteer might not be able to launch the browser.
  Please check your open processes and ensure that the browser processes that Puppeteer launched have been killed.
@@ -150,11 +152,41 @@ export const makeBrowserRunner = async ({
 			return Promise.resolve();
 		}
 
-		Log.verbose(
-			{indent, logLevel},
-			'Received SIGTERM signal. Killing browser process',
-		);
-		killProcess();
+		Log.verbose({indent, logLevel}, 'Closing browser process');
+
+		if (proc.pid && process.platform !== 'win32') {
+			// Send SIGTERM only to the main Chrome process (not the whole process group).
+			// This gives Chrome a chance to gracefully shut down and clean up its child
+			// processes before exiting, which prevents zombie processes when the Node.js
+			// process is running as PID 1 in a Docker container.
+			try {
+				process.kill(proc.pid, 'SIGTERM');
+			} catch {
+				// SIGTERM failed (e.g. process already exited), fall back to force kill
+				killProcess();
+			}
+
+			// Set a timeout to force kill the process group if Chrome doesn't exit gracefully.
+			const timeoutId = setTimeout(() => {
+				if (!closed) {
+					Log.verbose(
+						{indent, logLevel},
+						'Browser did not exit after SIGTERM, force killing process group',
+					);
+					killProcess();
+				}
+			}, GRACEFUL_CLOSE_TIMEOUT_MS);
+
+			processClosing
+				.then(() => {
+					clearTimeout(timeoutId);
+				})
+				.catch(() => {
+					clearTimeout(timeoutId);
+				});
+		} else {
+			killProcess();
+		}
 
 		deleteDirectory(userDataDir);
 
